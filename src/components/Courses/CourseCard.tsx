@@ -76,13 +76,13 @@ const CourseCard = ({ course, index, onRegister }: CourseCardProps) => {
           </div>
 
           {/* Schedule */}
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2 col-span-2">
             <div className="w-7 h-7 rounded-lg bg-white shadow-sm flex items-center justify-center shrink-0 mt-0.5">
               <Calendar className="w-3.5 h-3.5 text-primary" />
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Dates</span>
-              <span className="text-[10px] font-semibold text-primary leading-tight truncate">
+              <span className="text-[12px] font-semibold text-primary leading-tight truncate">
                 {formatDate(course.startDate)}
                 {course.endDate ? ` - ${formatDate(course.endDate)}` : ""}
               </span>
@@ -96,7 +96,7 @@ const CourseCard = ({ course, index, onRegister }: CourseCardProps) => {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Duration</span>
-              <span className="text-[10px] font-semibold text-primary leading-tight truncate">
+              <span className="text-[12px] font-semibold text-primary leading-tight truncate">
                 {course.duration || catalog?.duration || "N/A"}
               </span>
             </div>
@@ -110,20 +110,20 @@ const CourseCard = ({ course, index, onRegister }: CourseCardProps) => {
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Timings</span>
-                <span className="text-[10px] font-semibold text-primary leading-tight truncate">{course.timings}</span>
+                <span className="text-[12px] font-semibold text-primary leading-tight truncate">{course.timings}</span>
               </div>
             </div>
           )}
 
           {/* Days */}
           {course.days && (
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 col-span-2">
               <div className="w-7 h-7 rounded-lg bg-white shadow-sm flex items-center justify-center shrink-0 mt-0.5">
                 <CalendarDays className="w-3.5 h-3.5 text-primary" />
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Days</span>
-                <span className="text-[10px] font-semibold text-primary leading-tight truncate">{course.days}</span>
+                <span className="text-[12px] font-semibold text-primary leading-tight truncate">{course.days}</span>
               </div>
             </div>
           )}
@@ -135,7 +135,7 @@ const CourseCard = ({ course, index, onRegister }: CourseCardProps) => {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Language</span>
-              <span className="text-[10px] font-semibold text-primary leading-tight truncate">{course.language}</span>
+              <span className="text-[12px] font-semibold text-primary leading-tight truncate">{course.language}</span>
             </div>
           </div>
 
@@ -150,7 +150,7 @@ const CourseCard = ({ course, index, onRegister }: CourseCardProps) => {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-bold">Mode</span>
-              <span className="text-[10px] font-semibold text-primary leading-tight truncate">{course.mode}</span>
+              <span className="text-[12px] font-semibold text-primary leading-tight truncate">{course.mode}</span>
             </div>
           </div>
         </div>

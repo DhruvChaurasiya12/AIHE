@@ -72,12 +72,15 @@ const InstructorCard = ({
       {instructor.name}
     </h3>
 
-    <p className="mt-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+    <p className="mt-2 text-[10px] uppercase tracking-[0.2em]">
       {instructor.title}
     </p>
 
-    <div className="mt-auto pt-5">
-      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary transition-colors group-hover:text-orange-500">
+      <div className="border-b pt-2 mt-auto"></div>
+
+
+    <div className="pt-4">
+      <span className="text-[9px] uppercase tracking-[0.2em] text-primary/80 transition-colors group-hover:text-orange-500">
         View Profile
       </span>
     </div>
@@ -350,9 +353,9 @@ const Instructors = () => {
         <DialogContent className="overflow-hidden rounded-3xl border border-primary/10 bg-white p-0 sm:max-w-xl">
           {selectedInstructor && (
             <>
-              <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10 px-8 py-8">
+              <div className="bg-gradient-to-br from-primary/5 via-background to-primary/10 px-4 py-4">
                 <DialogHeader className="items-center text-center">
-                  <div className="mb-5 h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-lg">
+                  <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-lg">
                     {selectedInstructor.image &&
                     selectedInstructor.image !== "/placeholder.svg" ? (
                       <img
@@ -375,27 +378,26 @@ const Instructors = () => {
                     {selectedInstructor.name}
                   </DialogTitle>
 
-                  <p className="mt-2 text-sm uppercase tracking-[0.2em] text-muted-foreground">
+                  <p className=" text-sm uppercase tracking-[0.2em] text-muted-foreground text-center">
                     {selectedInstructor.title}
                   </p>
 
                   <Badge
                     variant="outline"
-                    className="mt-4 border-primary/20 bg-primary/5 px-4 py-1 uppercase tracking-wider text-primary"
+                    className=" border-primary/20 bg-primary/5 px-4 uppercase tracking-wider text-primary"
                   >
                     {selectedInstructor.category}
                   </Badge>
                 </DialogHeader>
               </div>
 
-              <div className="space-y-6 px-8 py-7">
-                {" "}
+              <div className="space-y-4 px-4 pb-4">
                 <div>
-                  <h4 className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+                  <h4 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
                     About
                   </h4>
 
-                  <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-5">
+                  <div>
                     <p className="text-sm leading-7 text-muted-foreground">
                       {selectedInstructor.bio || "Biography not available."}
                     </p>
@@ -404,7 +406,7 @@ const Instructors = () => {
                 {selectedInstructor.teaches &&
                   selectedInstructor.teaches.length > 0 && (
                     <div>
-                      <h4 className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+                      <h4 className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
                         Courses Taught
                       </h4>
 
@@ -413,7 +415,7 @@ const Instructors = () => {
                           <Badge
                             key={course}
                             variant="secondary"
-                            className="rounded-full border border-primary/10 bg-primary/5 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+                            className="rounded-full border border-primary/10 bg-primary/5 px-3 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white"
                           >
                             {course}
                           </Badge>
@@ -421,13 +423,6 @@ const Instructors = () => {
                       </div>
                     </div>
                   )}
-                <div className="border-t border-primary/10 pt-6">
-                  <div className="flex items-center justify-center">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-primary/60">
-                      AIHE Faculty
-                    </span>
-                  </div>
-                </div>
               </div>
             </>
           )}

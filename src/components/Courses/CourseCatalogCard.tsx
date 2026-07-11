@@ -30,7 +30,7 @@ const CourseCatalogCard = ({ catalog, index }: CourseCatalogCardProps) => {
           {label}
         </span>
 
-        <p className="text-[10px] font-semibold leading-tight text-primary">
+        <p className="text-[12px] font-semibold leading-tight text-primary">
           {value}
         </p>
       </div>

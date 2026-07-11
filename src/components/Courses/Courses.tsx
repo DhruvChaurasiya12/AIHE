@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { useCourseCatalog, useCourses } from "@/services/queries";
 import CourseCard from "./CourseCard";
 import CourseCatalogCard from "./CourseCatalogCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import {
   Carousel,
@@ -76,19 +77,26 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
   const [catalogIndex, setCatalogIndex] = useState(0);
 
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
   useEffect(() => {
     if (!upcomingApi) return;
 
-    const onSelect = () => {
-      setUpcomingIndex(upcomingApi.selectedScrollSnap());
+    const updateButtons = () => {
+      setCanScrollPrev(upcomingApi.canScrollPrev());
+      setCanScrollNext(upcomingApi.canScrollNext());
     };
 
-    onSelect();
+    // Initialize immediately
+    updateButtons();
 
-    upcomingApi.on("select", onSelect);
+    upcomingApi.on("select", updateButtons);
+    upcomingApi.on("reInit", updateButtons);
 
     return () => {
-      upcomingApi.off("select", onSelect);
+      upcomingApi.off("select", updateButtons);
+      upcomingApi.off("reInit", updateButtons);
     };
   }, [upcomingApi]);
 
@@ -97,6 +105,8 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
     const onSelect = () => {
       setLiveIndex(liveApi.selectedScrollSnap());
+      setCanScrollPrev(liveApi.canScrollPrev());
+      setCanScrollNext(liveApi.canScrollNext());
     };
 
     onSelect();
@@ -113,6 +123,8 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
     const onSelect = () => {
       setCatalogIndex(catalogApi.selectedScrollSnap());
+      setCanScrollPrev(catalogApi.canScrollPrev());
+      setCanScrollNext(catalogApi.canScrollNext());
     };
 
     onSelect();
@@ -243,8 +255,35 @@ const Courses = ({ onRegister }: CoursesProps) => {
                   ))}
                 </CarouselContent>
 
-                <CarouselPrevious className="hidden h-11 w-11 border-primary/10 bg-white shadow-md md:flex" />
-                <CarouselNext className="hidden h-11 w-11 border-primary/10 bg-white shadow-md md:flex" />
+                {upcomingCourses.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => upcomingApi?.scrollPrev()}
+                      disabled={!canScrollPrev}
+                      className={`absolute top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full shadow-xl transition-all duration-300
+    ${
+      canScrollPrev
+        ? "bg-white/95 hover:scale-110 hover:bg-orange-400 hover:text-white active:scale-95"
+        : "cursor-not-allowed bg-gray-200 text-gray-400 opacity-50"
+    }`}
+                    >
+                      <ChevronLeft className="h-6 w-6" />
+                    </button>
+
+                    <button
+                      onClick={() => upcomingApi?.scrollNext()}
+                      disabled={!canScrollNext}
+                      className={`absolute right-0 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full shadow-xl transition-all duration-300
+    ${
+      canScrollNext
+        ? "bg-white/95 hover:scale-110 hover:bg-orange-400 hover:text-white active:scale-95"
+        : "cursor-not-allowed bg-gray-200 text-gray-400 opacity-50"
+    }`}
+                    >
+                      <ChevronRight className="h-6 w-6" />
+                    </button>
+                  </>
+                )}
               </Carousel>
 
               <Indicators api={upcomingApi} active={upcomingIndex} />
