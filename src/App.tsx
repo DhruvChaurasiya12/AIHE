@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import CourseDetails from "./pages/coursedetails/CourseDetails";
+import ScrollToTop from "./components/ScrollToTop";
+import CourseCatalogDetails from "./pages/coursecatalog/CourseCatalogDetails";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,9 +23,17 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/courses/:courseId" element={<CourseDetails />} />
+          <Route
+            path="/courses/catalog/:courseId"
+            element={<CourseCatalogDetails />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { BookOpen, Clock, Globe, GraduationCap, MapPin } from "lucide-react";
-
+import { Clock, Globe, GraduationCap, MapPin } from "lucide-react";
 import type { CourseCatalog } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 interface CourseCatalogCardProps {
   catalog: CourseCatalog;
@@ -81,10 +82,6 @@ const CourseCatalogCard = ({ catalog, index }: CourseCatalogCardProps) => {
       {/* Content */}
 
       <div className="flex flex-col px-4 py-2 sm:px-6 sm:py-4">
-        <p className="mb-4 line-clamp-2 text-sm italic leading-relaxed text-muted-foreground">
-          {catalog.description}
-        </p>
-
         {/* Details */}
 
         <div className="grid grid-cols-2 gap-2 rounded-2xl border border-primary/5 bg-secondary/20 p-2 sm:p-4">
@@ -112,23 +109,10 @@ const CourseCatalogCard = ({ catalog, index }: CourseCatalogCardProps) => {
           />{" "}
         </div>
 
-        {/* Curriculum */}
-
-        <div className="mt-4 rounded-2xl border border-primary/5 bg-primary/[0.03] p-3">
-          <div className="mb-2 flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white shadow-sm">
-              <BookOpen className="h-3.5 w-3.5 text-primary" />
-            </div>
-
-            <span className="text-[9px] font-bold uppercase tracking-widest text-primary">
-              What You'll Learn
-            </span>
-          </div>
-
-          <p className="line-clamp-4 text-xs leading-relaxed text-muted-foreground">
-            {catalog.curriculumSummary ||
-              "Comprehensive curriculum covering the essential concepts, practical application, guided study, and structured learning outcomes for this course."}
-          </p>
+        <div className="mt-auto border-t border-primary/5 pt-4">
+          <Button variant="outline" className="w-full" asChild>
+            <Link to={`/courses/catalog/${catalog.courseId}`}>See Details</Link>
+          </Button>
         </div>
       </div>
     </motion.div>

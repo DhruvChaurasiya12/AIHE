@@ -4,7 +4,6 @@ import { motion, useInView } from "framer-motion";
 import { useCourseCatalog, useCourses } from "@/services/queries";
 import CourseCard from "./CourseCard";
 import CourseCatalogCard from "./CourseCatalogCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import {
   Carousel,
@@ -17,6 +16,7 @@ import {
 
 import type { Course } from "@/types";
 import { isCourseLive, isCourseUpcoming } from "@/lib/utils";
+import CarouselNavigation from "../ui/CarouselNavigation";
 
 interface CoursesProps {
   onRegister: (course: Course) => void;
@@ -77,26 +77,38 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
   const [catalogIndex, setCatalogIndex] = useState(0);
 
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  /* Upcoming */
+
+  const [canUpcomingPrev, setCanUpcomingPrev] = useState(false);
+  const [canUpcomingNext, setCanUpcomingNext] = useState(false);
+
+  /* Live */
+
+  const [canLivePrev, setCanLivePrev] = useState(false);
+  const [canLiveNext, setCanLiveNext] = useState(false);
+
+  /* Catalog */
+
+  const [canCatalogPrev, setCanCatalogPrev] = useState(false);
+  const [canCatalogNext, setCanCatalogNext] = useState(false);
 
   useEffect(() => {
     if (!upcomingApi) return;
 
-    const updateButtons = () => {
-      setCanScrollPrev(upcomingApi.canScrollPrev());
-      setCanScrollNext(upcomingApi.canScrollNext());
+    const onSelect = () => {
+      setUpcomingIndex(upcomingApi.selectedScrollSnap());
+      setCanUpcomingPrev(upcomingApi.canScrollPrev());
+      setCanUpcomingNext(upcomingApi.canScrollNext());
     };
 
-    // Initialize immediately
-    updateButtons();
+    onSelect();
 
-    upcomingApi.on("select", updateButtons);
-    upcomingApi.on("reInit", updateButtons);
+    upcomingApi.on("select", onSelect);
+    upcomingApi.on("reInit", onSelect);
 
     return () => {
-      upcomingApi.off("select", updateButtons);
-      upcomingApi.off("reInit", updateButtons);
+      upcomingApi.off("select", onSelect);
+      upcomingApi.off("reInit", onSelect);
     };
   }, [upcomingApi]);
 
@@ -105,16 +117,18 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
     const onSelect = () => {
       setLiveIndex(liveApi.selectedScrollSnap());
-      setCanScrollPrev(liveApi.canScrollPrev());
-      setCanScrollNext(liveApi.canScrollNext());
+      setCanLivePrev(liveApi.canScrollPrev());
+      setCanLiveNext(liveApi.canScrollNext());
     };
 
     onSelect();
 
     liveApi.on("select", onSelect);
+    liveApi.on("reInit", onSelect);
 
     return () => {
       liveApi.off("select", onSelect);
+      liveApi.off("reInit", onSelect);
     };
   }, [liveApi]);
 
@@ -123,18 +137,41 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
     const onSelect = () => {
       setCatalogIndex(catalogApi.selectedScrollSnap());
-      setCanScrollPrev(catalogApi.canScrollPrev());
-      setCanScrollNext(catalogApi.canScrollNext());
+      setCanCatalogPrev(catalogApi.canScrollPrev());
+      setCanCatalogNext(catalogApi.canScrollNext());
     };
 
     onSelect();
 
     catalogApi.on("select", onSelect);
+    catalogApi.on("reInit", onSelect);
 
     return () => {
       catalogApi.off("select", onSelect);
+      catalogApi.off("reInit", onSelect);
     };
   }, [catalogApi]);
+
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 1280); // xl
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1280); // md-lg
+    };
+
+    updateScreenSize();
+    window.addEventListener("resize", updateScreenSize);
+
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, []);
+
+  const shouldLoop = (count: number) => {
+    if (isDesktop) return count > 6; // 3 cards visible
+    if (isTablet) return count > 2; // 2 cards visible
+    return count > 1; // 1 card visible
+  };
 
   /* ------------------------------------------------ */
 
@@ -212,7 +249,7 @@ const Courses = ({ onRegister }: CoursesProps) => {
             experienced teachers and designed for systematic spiritual learning.
           </p>
         </motion.div>
-        {/* Upcoming Courses */}{" "}
+        {/* Upcoming Courses */}
         <section className="mb-16 sm:mb-24">
           <SectionHeader title="Upcoming Courses" />
 
@@ -236,7 +273,7 @@ const Courses = ({ onRegister }: CoursesProps) => {
                 setApi={setUpcomingApi}
                 opts={{
                   align: "start",
-                  loop: upcomingCourses.length > 3,
+                  loop: shouldLoop(upcomingCourses.length),
                 }}
                 className="relative"
               >
@@ -255,35 +292,12 @@ const Courses = ({ onRegister }: CoursesProps) => {
                   ))}
                 </CarouselContent>
 
-                {upcomingCourses.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => upcomingApi?.scrollPrev()}
-                      disabled={!canScrollPrev}
-                      className={`absolute top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full shadow-xl transition-all duration-300
-    ${
-      canScrollPrev
-        ? "bg-white/95 hover:scale-110 hover:bg-orange-400 hover:text-white active:scale-95"
-        : "cursor-not-allowed bg-gray-200 text-gray-400 opacity-50"
-    }`}
-                    >
-                      <ChevronLeft className="h-6 w-6" />
-                    </button>
-
-                    <button
-                      onClick={() => upcomingApi?.scrollNext()}
-                      disabled={!canScrollNext}
-                      className={`absolute right-0 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full shadow-xl transition-all duration-300
-    ${
-      canScrollNext
-        ? "bg-white/95 hover:scale-110 hover:bg-orange-400 hover:text-white active:scale-95"
-        : "cursor-not-allowed bg-gray-200 text-gray-400 opacity-50"
-    }`}
-                    >
-                      <ChevronRight className="h-6 w-6" />
-                    </button>
-                  </>
-                )}
+                <CarouselNavigation
+                  onPrev={() => upcomingApi?.scrollPrev()}
+                  onNext={() => upcomingApi?.scrollNext()}
+                  canPrev={canUpcomingPrev}
+                  canNext={canUpcomingNext}
+                />
               </Carousel>
 
               <Indicators api={upcomingApi} active={upcomingIndex} />
@@ -315,7 +329,7 @@ const Courses = ({ onRegister }: CoursesProps) => {
                 setApi={setLiveApi}
                 opts={{
                   align: "start",
-                  loop: liveCourses.length > 3,
+                  loop: shouldLoop(upcomingCourses.length),
                 }}
                 className="relative"
               >
@@ -334,8 +348,12 @@ const Courses = ({ onRegister }: CoursesProps) => {
                   ))}
                 </CarouselContent>
 
-                <CarouselPrevious className="hidden h-11 w-11 border-primary/10 bg-white shadow-md md:flex" />
-                <CarouselNext className="hidden h-11 w-11 border-primary/10 bg-white shadow-md md:flex" />
+                <CarouselNavigation
+                  onPrev={() => liveApi?.scrollPrev()}
+                  onNext={() => liveApi?.scrollNext()}
+                  canPrev={canLivePrev}
+                  canNext={canLiveNext}
+                />
               </Carousel>
 
               <Indicators api={liveApi} active={liveIndex} />
@@ -367,7 +385,7 @@ const Courses = ({ onRegister }: CoursesProps) => {
                 setApi={setCatalogApi}
                 opts={{
                   align: "start",
-                  loop: catalogCourses.length > 3,
+                  loop: shouldLoop(upcomingCourses.length),
                 }}
                 className="relative"
               >
@@ -381,9 +399,12 @@ const Courses = ({ onRegister }: CoursesProps) => {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-
-                <CarouselPrevious className="hidden h-11 w-11 border-primary/10 bg-white shadow-md md:flex" />
-                <CarouselNext className="hidden h-11 w-11 border-primary/10 bg-white shadow-md md:flex" />
+                <CarouselNavigation
+                  onPrev={() => catalogApi?.scrollPrev()}
+                  onNext={() => catalogApi?.scrollNext()}
+                  canPrev={canCatalogPrev}
+                  canNext={canCatalogNext}
+                />
               </Carousel>
 
               <Indicators api={catalogApi} active={catalogIndex} />

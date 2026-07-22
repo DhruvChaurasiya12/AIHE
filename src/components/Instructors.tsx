@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Badge } from "@/components/ui/badge";
+import CarouselNavigation from "./ui/CarouselNavigation";
 
 /* -------------------------------------------------- */
 /* Instructor Card */
@@ -30,12 +31,14 @@ interface InstructorCardProps {
   instructor: Instructor;
   index: number;
   onClick: () => void;
+  showProfile?: boolean;
 }
 
 const InstructorCard = ({
   instructor,
   index,
   onClick,
+  showProfile = true,
 }: InstructorCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -45,8 +48,10 @@ const InstructorCard = ({
       duration: 0.45,
       delay: index * 0.05,
     }}
-    onClick={onClick}
-    className="group flex h-full cursor-pointer flex-col rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+    onClick={showProfile ? onClick : undefined}
+    className={`group flex h-full flex-col rounded-2xl border border-border/50 bg-card p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+      showProfile ? "cursor-pointer" : "cursor-default"
+    }`}
   >
     <div className="mx-auto mb-5">
       <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-primary/10 bg-primary/5 md:h-28 md:w-28">
@@ -76,14 +81,17 @@ const InstructorCard = ({
       {instructor.title}
     </p>
 
-      <div className="border-b pt-2 mt-auto"></div>
+    {showProfile && (
+      <>
+        <div className="mt-auto border-b pt-2"></div>
 
-
-    <div className="pt-4">
-      <span className="text-[9px] uppercase tracking-[0.2em] text-primary/80 transition-colors group-hover:text-orange-500">
-        View Profile
-      </span>
-    </div>
+        <div className="pt-4">
+          <span className="text-[9px] uppercase tracking-[0.2em] text-primary/80 transition-colors group-hover:text-orange-500">
+            View Profile
+          </span>
+        </div>
+      </>
+    )}
   </motion.div>
 );
 
@@ -149,20 +157,29 @@ const Instructors = () => {
   const [facultyIndex, setFacultyIndex] = useState(0);
 
   const [guestIndex, setGuestIndex] = useState(0);
+  const [canFacultyPrev, setCanFacultyPrev] = useState(false);
+  const [canFacultyNext, setCanFacultyNext] = useState(false);
+
+  const [canGuestPrev, setCanGuestPrev] = useState(false);
+  const [canGuestNext, setCanGuestNext] = useState(false);
 
   useEffect(() => {
     if (!facultyApi) return;
 
     const onSelect = () => {
       setFacultyIndex(facultyApi.selectedScrollSnap());
+      setCanFacultyPrev(facultyApi.canScrollPrev());
+      setCanFacultyNext(facultyApi.canScrollNext());
     };
 
     onSelect();
 
     facultyApi.on("select", onSelect);
+    facultyApi.on("reInit", onSelect);
 
     return () => {
       facultyApi.off("select", onSelect);
+      facultyApi.off("reInit", onSelect);
     };
   }, [facultyApi]);
 
@@ -171,12 +188,41 @@ const Instructors = () => {
 
     const onSelect = () => {
       setGuestIndex(guestApi.selectedScrollSnap());
+      setCanGuestPrev(guestApi.canScrollPrev());
+      setCanGuestNext(guestApi.canScrollNext());
     };
 
     onSelect();
 
     guestApi.on("select", onSelect);
+    guestApi.on("reInit", onSelect);
+
+    return () => {
+      guestApi.off("select", onSelect);
+      guestApi.off("reInit", onSelect);
+    };
   }, [guestApi]);
+
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 1280); // xl
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1280); // md-lg
+    };
+
+    updateScreenSize();
+    window.addEventListener("resize", updateScreenSize);
+
+    return () => window.removeEventListener("resize", updateScreenSize);
+  }, []);
+
+  const shouldLoop = (count: number) => {
+    if (isDesktop) return count > 6; // 3 cards visible
+    if (isTablet) return count > 2; // 2 cards visible
+    return count > 1; // 1 card visible
+  };
 
   /* -------------------------------------------------- */
   /* Section Header */
@@ -212,7 +258,8 @@ const Instructors = () => {
     list: Instructor[],
     apiSetter: (api: CarouselApi) => void,
     api?: CarouselApi,
-    activeIndex = 0,
+    activeIndex: number = 0,
+    showProfile: boolean = true,
   ) => {
     if (!list.length) return null;
 
@@ -224,7 +271,7 @@ const Instructors = () => {
           setApi={apiSetter}
           opts={{
             align: "start",
-            loop: list.length > 5,
+            loop: shouldLoop(list.length),
           }}
           className="relative"
         >
@@ -244,6 +291,7 @@ const Instructors = () => {
                   <InstructorCard
                     instructor={instructor}
                     index={index}
+                    showProfile={showProfile}
                     onClick={() => setSelectedInstructor(instructor)}
                   />
                 </div>
@@ -251,9 +299,16 @@ const Instructors = () => {
             ))}
           </CarouselContent>
 
-          <CarouselPrevious className="hidden md:flex h-11 w-11 border-primary/10 bg-white shadow-md hover:bg-primary hover:text-white transition-all" />
-
-          <CarouselNext className="hidden md:flex h-11 w-11 border-primary/10 bg-white shadow-md hover:bg-primary hover:text-white transition-all" />
+          <CarouselNavigation
+            onPrev={() => api?.scrollPrev()}
+            onNext={() => api?.scrollNext()}
+            canPrev={
+              title === "Full-Time Faculty" ? canFacultyPrev : canGuestPrev
+            }
+            canNext={
+              title === "Full-Time Faculty" ? canFacultyNext : canGuestNext
+            }
+          />
         </Carousel>
 
         <Indicators api={api} active={activeIndex} />
@@ -328,6 +383,7 @@ const Instructors = () => {
               setFacultyApi,
               facultyApi,
               facultyIndex,
+              true,
             )}
 
             {renderSection(
@@ -337,6 +393,7 @@ const Instructors = () => {
               setGuestApi,
               guestApi,
               guestIndex,
+              false,
             )}
           </>
         )}
