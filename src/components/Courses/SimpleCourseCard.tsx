@@ -30,7 +30,7 @@ const SimpleCourseCard = ({
         />
       </div>
 
-      <div className="p-4">
+      <div className="p-2 sm:p-4">
         <h3 className="line-clamp-2 text-base font-semibold text-primary transition-colors group-hover:text-orange-500">
           {title}
         </h3>

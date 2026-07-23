@@ -6,17 +6,16 @@ import {
   Loader2,
   PlayCircle,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 import { useCourseCatalog, useCourses } from "@/services/queries";
 
 import { isCourseLive, isCourseUpcoming } from "@/lib/utils";
 
 import SimpleCourseCard from "./SimpleCourseCard";
+import CoursesHeader from "./CoursesHeader";
+import Footer from "../Footer";
 
 const AllCourses = () => {
-  const navigate = useNavigate();
-
   const { data: coursesData, isLoading: coursesLoading } = useCourses();
 
   const { data: catalogData, isLoading: catalogLoading } = useCourseCatalog();
@@ -56,33 +55,6 @@ const AllCourses = () => {
 
   /* ---------------------------------------------------------- */
 
-  const openCourse = (courseId: string) => {
-    navigate(`/courses/${courseId}`);
-  };
-
-  /* ---------------------------------------------------------- */
-
-  const Hero = () => (
-    <section className="relative overflow-hidden rounded-3xl border bg-gradient-to-br from-primary/5 via-background to-orange-50 px-6 py-16 shadow-sm">
-      <div className="mx-auto max-w-4xl text-center">
-        <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-primary">
-          AIHE Programs
-        </span>
-
-        <h1 className="mt-6 font-serif text-4xl font-bold text-primary md:text-5xl">
-          Explore All Courses
-        </h1>
-
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
-          Discover every course offered by AIHE, including upcoming batches,
-          live programs and our complete course catalog.
-        </p>
-      </div>
-    </section>
-  );
-
-  /* ---------------------------------------------------------- */
-
   const SectionHeader = ({
     icon,
     title,
@@ -98,7 +70,7 @@ const AllCourses = () => {
       </div>
 
       <div>
-        <h2 className="font-serif text-3xl font-bold text-primary">{title}</h2>
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-primary">{title}</h2>
 
         <p className="mt-1 text-muted-foreground">{subtitle}</p>
       </div>
@@ -144,7 +116,7 @@ const AllCourses = () => {
     courses: any[];
     catalog?: boolean;
   }) => (
-    <div className="grid grid-cols-2 gap-5 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
       {courses.map((course) => (
         <SimpleCourseCard
           key={course.courseId}
@@ -164,94 +136,97 @@ const AllCourses = () => {
   /* ---------------------------------------------------------- */
 
   return (
-    <section className="bg-gradient-to-b from-background via-card to-background py-12 sm:py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Hero />
-        {/* Upcoming Courses */}
-        <motion.section
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          viewport={{ once: true }}
-          className="mt-16"
-        >
-          <SectionHeader
-            icon={<CalendarDays className="h-7 w-7" />}
-            title="Upcoming Courses"
-            subtitle="Registration is currently open."
-          />
-
-          {coursesLoading ? (
-            <LoadingState />
-          ) : upcomingCourses.length === 0 ? (
-            <EmptyState
-              title="No Upcoming Courses"
-              description="New batches will be announced soon. Please check back later."
+    <main className="bg-[#FAF8F3]">
+      <section className="bg-gradient-to-b from-background via-card to-background pt-10 lg:pt-20 ">
+        <CoursesHeader />
+        <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
+          {/* Upcoming Courses */}
+          <motion.section
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            viewport={{ once: true }}
+            className="mt-16"
+          >
+            <SectionHeader
+              icon={<CalendarDays className="h-7 w-7" />}
+              title="Upcoming Courses"
+              subtitle="Registration is currently open."
             />
-          ) : (
-            <CourseGrid courses={upcomingCourses} />
-          )}
-        </motion.section>
-        {/* ---------------------------------------------------------- */}
-        {/* Live Courses */}
-        {/* ---------------------------------------------------------- */}
-        <motion.section
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.1 }}
-          viewport={{ once: true }}
-          className="mt-24"
-        >
-          <SectionHeader
-            icon={<PlayCircle className="h-7 w-7" />}
-            title="Live Courses"
-            subtitle="Currently running batches."
-          />
 
-          {coursesLoading ? (
-            <LoadingState />
-          ) : liveCourses.length === 0 ? (
-            <EmptyState
-              title="No Live Courses"
-              description="There are no active batches at the moment."
+            {coursesLoading ? (
+              <LoadingState />
+            ) : upcomingCourses.length === 0 ? (
+              <EmptyState
+                title="No Upcoming Courses"
+                description="New batches will be announced soon. Please check back later."
+              />
+            ) : (
+              <CourseGrid courses={upcomingCourses} />
+            )}
+          </motion.section>
+          {/* ---------------------------------------------------------- */}
+          {/* Live Courses */}
+          {/* ---------------------------------------------------------- */}
+          <motion.section
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="mt-24"
+          >
+            <SectionHeader
+              icon={<PlayCircle className="h-7 w-7" />}
+              title="Live Courses"
+              subtitle="Currently running batches."
             />
-          ) : (
-            <CourseGrid courses={liveCourses} />
-          )}
-        </motion.section>
-        {/* ---------------------------------------------------------- */}
-        {/* Course Catalog */}
-        {/* ---------------------------------------------------------- */}
-        {/* Part 3 continues from here... */}{" "}
-        {/* ---------------------------------------------------------- */}
-        {/* Course Catalog */}
-        {/* ---------------------------------------------------------- */}
-        <motion.section
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="mt-24"
-        >
-          <SectionHeader
-            icon={<GraduationCap className="h-7 w-7" />}
-            title="Course Catalog"
-            subtitle="Self-paced learning and upcoming programs."
-          />
 
-          {catalogLoading ? (
-            <LoadingState />
-          ) : catalogCourses.length === 0 ? (
-            <EmptyState
-              title="No Courses Available"
-              description="The course catalog is currently empty. Please check back later."
+            {coursesLoading ? (
+              <LoadingState />
+            ) : liveCourses.length === 0 ? (
+              <EmptyState
+                title="No Live Courses"
+                description="There are no active batches at the moment."
+              />
+            ) : (
+              <CourseGrid courses={liveCourses} />
+            )}
+          </motion.section>
+          {/* ---------------------------------------------------------- */}
+          {/* Course Catalog */}
+          {/* ---------------------------------------------------------- */}
+          {/* Part 3 continues from here... */}{" "}
+          {/* ---------------------------------------------------------- */}
+          {/* Course Catalog */}
+          {/* ---------------------------------------------------------- */}
+          <motion.section
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="mt-24"
+          >
+            <SectionHeader
+              icon={<GraduationCap className="h-7 w-7" />}
+              title="Course Catalog"
+              subtitle="Self-paced learning and upcoming programs."
             />
-          ) : (
-            <CourseGrid courses={catalogCourses} catalog />
-          )}
-        </motion.section>
-      </div>
-    </section>
+
+            {catalogLoading ? (
+              <LoadingState />
+            ) : catalogCourses.length === 0 ? (
+              <EmptyState
+                title="No Courses Available"
+                description="The course catalog is currently empty. Please check back later."
+              />
+            ) : (
+              <CourseGrid courses={catalogCourses} catalog />
+            )}
+          </motion.section>
+        </div>
+      </section>
+      <Footer />
+    </main>
   );
 };
 

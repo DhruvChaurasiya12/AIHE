@@ -6,7 +6,7 @@ import About from "@/components/About";
 import OurInspiration from "@/components/OurInspiration";
 import Testimonials from "@/components/Testimonials";
 import ResultsSection from "@/components/ResultsSection";
-import Courses from "@/components/Courses";
+import Courses from "@/pages";
 import Instructors from "@/components/Instructors";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -38,7 +38,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main>
         <Hero />
         <About />
@@ -49,7 +49,7 @@ const Index = () => {
         <ResultsSection />
         <Contact />
       </main>
-      
+
       <Footer />
       <WhatsAppButton />
       <Toaster />
@@ -58,4 +58,3 @@ const Index = () => {
 };
 
 export default Index;
-
