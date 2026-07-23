@@ -137,7 +137,7 @@ const AllCourses = () => {
 
   return (
     <main className="bg-[#FAF8F3]">
-      <section className="bg-gradient-to-b from-background via-card to-background pt-10 lg:pt-20 ">
+      <section className="pt-10 lg:pt-20 pb-20">
         <CoursesHeader />
         <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
           {/* Upcoming Courses */}
