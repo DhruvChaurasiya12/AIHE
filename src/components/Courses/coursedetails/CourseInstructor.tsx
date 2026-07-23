@@ -14,7 +14,7 @@ const CourseInstructor = ({ course }: CourseInstructorProps) => {
 
   return (
     <section className="mt-12 sm:mt-16">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}

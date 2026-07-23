@@ -10,13 +10,13 @@ import {
   CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useNavigate } from "react-router-dom";
 
 import type { Course } from "@/types";
 import { isCourseLive, isCourseUpcoming } from "@/lib/utils";
 import CarouselNavigation from "../ui/CarouselNavigation";
+import { ArrowRight } from "lucide-react";
 
 interface CoursesProps {
   onRegister: (course: Course) => void;
@@ -71,12 +71,6 @@ const Courses = ({ onRegister }: CoursesProps) => {
 
   const [catalogApi, setCatalogApi] = useState<CarouselApi>();
 
-  const [upcomingIndex, setUpcomingIndex] = useState(0);
-
-  const [liveIndex, setLiveIndex] = useState(0);
-
-  const [catalogIndex, setCatalogIndex] = useState(0);
-
   /* Upcoming */
 
   const [canUpcomingPrev, setCanUpcomingPrev] = useState(false);
@@ -96,7 +90,6 @@ const Courses = ({ onRegister }: CoursesProps) => {
     if (!upcomingApi) return;
 
     const onSelect = () => {
-      setUpcomingIndex(upcomingApi.selectedScrollSnap());
       setCanUpcomingPrev(upcomingApi.canScrollPrev());
       setCanUpcomingNext(upcomingApi.canScrollNext());
     };
@@ -116,7 +109,6 @@ const Courses = ({ onRegister }: CoursesProps) => {
     if (!liveApi) return;
 
     const onSelect = () => {
-      setLiveIndex(liveApi.selectedScrollSnap());
       setCanLivePrev(liveApi.canScrollPrev());
       setCanLiveNext(liveApi.canScrollNext());
     };
@@ -136,7 +128,6 @@ const Courses = ({ onRegister }: CoursesProps) => {
     if (!catalogApi) return;
 
     const onSelect = () => {
-      setCatalogIndex(catalogApi.selectedScrollSnap());
       setCanCatalogPrev(catalogApi.canScrollPrev());
       setCanCatalogNext(catalogApi.canScrollNext());
     };
@@ -185,30 +176,10 @@ const Courses = ({ onRegister }: CoursesProps) => {
     </div>
   );
 
-  const Indicators = ({
-    api,
-    active,
-  }: {
-    api?: CarouselApi;
-    active: number;
-  }) => {
-    if (!api) return null;
+  const navigate = useNavigate();
 
-    return (
-      <div className="mt-8 flex items-center justify-center gap-3">
-        {api.scrollSnapList().map((_, index) => (
-          <button
-            key={index}
-            onClick={() => api.scrollTo(index)}
-            className={`transition-all duration-500 ${
-              active === index
-                ? "h-3 w-10 rounded-full bg-orange-400"
-                : "h-3 w-3 rounded-full bg-slate-300 hover:bg-orange-300"
-            }`}
-          />
-        ))}
-      </div>
-    );
+  const seeMore = () => {
+    navigate("/courses");
   };
 
   return (
@@ -299,8 +270,15 @@ const Courses = ({ onRegister }: CoursesProps) => {
                   canNext={canUpcomingNext}
                 />
               </Carousel>
-
-              <Indicators api={upcomingApi} active={upcomingIndex} />
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={seeMore}
+                  className="group inline-flex items-center gap-1 text-sm font-semibold text-primary transition-all hover:text-orange-500"
+                >
+                  View all courses
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </div>
             </>
           )}
         </section>
@@ -355,11 +333,18 @@ const Courses = ({ onRegister }: CoursesProps) => {
                   canNext={canLiveNext}
                 />
               </Carousel>
-
-              <Indicators api={liveApi} active={liveIndex} />
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={seeMore}
+                  className="group inline-flex items-center gap-1 text-sm font-semibold text-primary transition-all hover:text-orange-500"
+                >
+                  View all courses
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </div>
             </>
           )}
-        </section>{" "}
+        </section>
         {/* Course Catalog */}
         <section>
           <SectionHeader title="Course Catalog" />
@@ -407,10 +392,18 @@ const Courses = ({ onRegister }: CoursesProps) => {
                 />
               </Carousel>
 
-              <Indicators api={catalogApi} active={catalogIndex} />
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={seeMore}
+                  className="group inline-flex items-center gap-1 text-sm font-semibold text-primary transition-all hover:text-orange-500"
+                >
+                  View all courses
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              </div>
             </>
           )}
-        </section>{" "}
+        </section>
       </div>
     </section>
   );

@@ -1,9 +1,8 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
+import CoursesHeader from "../CoursesHeader";
 import CourseHero from "./CourseHero";
 import CourseQuickInfo from "./CourseQuickInfo";
 import CourseDescription from "./CourseDescription";
@@ -69,28 +68,8 @@ const CourseDetails = () => {
 
   return (
     <main className="bg-[#FAF8F3]">
-      {/* Top Bar */}
 
-      <div className="fixed left-0 right-0 top-0 z-50 flex h-20 items-center justify-center bg-primary">
-        <div className="w-full max-w-7xl px-4">
-          <Button
-            variant="ghost"
-            className="h-full gap-2 text-white hover:bg-transparent hover:text-white focus:bg-transparent active:bg-transparent lg:text-xl lg:[&_svg]:!size-6"
-            onClick={() => {
-              navigate("/");
-
-              setTimeout(() => {
-                document
-                  .getElementById("courses")
-                  ?.scrollIntoView({ behavior: "smooth" });
-              }, 100);
-            }}
-          >
-            <ArrowLeft />
-            Back to Courses
-          </Button>
-        </div>
-      </div>
+      <CoursesHeader/>  
 
       <section className="mt-20 pb-20">
         <div className="mx-auto max-w-7xl lg:px-6">
@@ -101,7 +80,7 @@ const CourseDetails = () => {
             </div>
 
             {/* Right Sidebar */}
-            <aside className="">
+            <aside>
               <div className="pt-10 hidden lg:block">
                 <CourseRegistrationCard
                   course={course}
@@ -111,7 +90,7 @@ const CourseDetails = () => {
             </aside>
           </div>
 
-          <div>
+          <div className="px-2 sm:px-4">
             <CourseQuickInfo course={course} />
 
             <CourseDescription course={course} />
@@ -121,7 +100,7 @@ const CourseDetails = () => {
 
           {/* Mobile */}
 
-          <div className="lg:hidden px-4 pt-10">
+          <div className="lg:hidden px-2 pt-10">
             <CourseRegistrationCard
               course={course}
               onRegister={handleRegister}

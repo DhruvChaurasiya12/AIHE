@@ -57,7 +57,7 @@ const CourseQuickInfo = ({ course }: CourseQuickInfoProps) => {
   const title = catalog?.name || "Course";
 
   return (
-    <section className="mx-auto lg:mt-10 max-w-7xl px-4">
+    <section className="mx-auto lg:mt-10 max-w-7xl">
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}

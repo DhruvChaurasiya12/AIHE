@@ -5,9 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import CourseDetails from "./pages/coursedetails/CourseDetails";
+import CourseDetails from "./components/Courses/coursedetails/CourseDetails";
 import ScrollToTop from "./components/ScrollToTop";
-import CourseCatalogDetails from "./pages/coursecatalog/CourseCatalogDetails";
+import CourseCatalogDetails from "./components/Courses/coursecatalog/CourseCatalogDetails";
+import AllCourses from "./components/Courses/AllCourses";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,7 @@ const App = () => (
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/courses" element={<AllCourses />} />
           <Route path="/courses/:courseId" element={<CourseDetails />} />
           <Route
             path="/courses/catalog/:courseId"

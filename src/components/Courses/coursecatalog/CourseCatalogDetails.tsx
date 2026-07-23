@@ -14,6 +14,7 @@ import { useCourseCatalog } from "@/services/queries";
 
 import type { CourseCatalog } from "@/types";
 import CatalogInfoCard from "./CatalogInfoCard";
+import CoursesHeader from "../CoursesHeader";
 
 const CourseCatalogDetails = () => {
   const navigate = useNavigate();
@@ -65,28 +66,8 @@ const CourseCatalogDetails = () => {
 
   return (
     <main className="bg-[#FAF8F3]">
-      {/* Top Bar */}
 
-      <div className="fixed left-0 right-0 top-0 z-50 flex h-20 items-center justify-center bg-primary">
-        <div className="w-full max-w-7xl px-4">
-          <Button
-            variant="ghost"
-            className="h-full gap-2 text-white hover:bg-transparent hover:text-white focus:bg-transparent active:bg-transparent lg:text-xl lg:[&_svg]:!size-6"
-            onClick={() => {
-              navigate("/");
-
-              setTimeout(() => {
-                document.getElementById("courses")?.scrollIntoView({
-                  behavior: "smooth",
-                });
-              }, 100);
-            }}
-          >
-            <ArrowLeft />
-            Back to Courses
-          </Button>
-        </div>
-      </div>
+      <CoursesHeader/> 
 
       <section className="mt-20 pb-20">
         <div className="mx-auto max-w-7xl lg:px-6">
@@ -103,12 +84,12 @@ const CourseCatalogDetails = () => {
             </aside>
           </div>
 
-          <div className="px-4 lg:hidden">
+          <div className="px-2 sm:px-4 lg:hidden">
             <CatalogInfoCard catalog={catalog} />
           </div>
 
           {/* Content */}
-          <div className="space-y-6 lg:space-y-12 px-4">
+          <div className="space-y-6 lg:space-y-12 px-2 sm:px-4">
             <CatalogAbout catalog={catalog} />
 
             <CatalogCurriculum />
